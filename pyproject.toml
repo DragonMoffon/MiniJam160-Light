@@ -1,0 +1,21 @@
+[project]
+name="Rogue-Light"
+description="A short light based rogue-like built with Python Arcade"
+license = {text = "MIT License"}
+readme="README.md"
+version="0.0"
+dependencies=[
+    "imgui[pyglet]",
+    "digiformatter",
+    "arcade@ git+https://github.com/pythonarcade/arcade#egg=development"
+]
+requires-python= ">= 3.12"
+authors =  [
+    {name = "DragonMoffon", email = "dumpy.spam.man@gmail.com"}
+]
+maintainers = [
+    {name = "DragonMoffon", email = "dumpy.spam.man@gmail.com"}
+]
+
+[tool.setuptools]
+packages = ["mj160"]
