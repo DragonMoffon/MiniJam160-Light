@@ -3,6 +3,8 @@ from math import sin, pi
 
 from arcade import Sprite, View
 
+from mj160.data import load_texture
+
 
 class Splash(NamedTuple):
     src: str
@@ -17,20 +19,20 @@ class Splash(NamedTuple):
 SPLASHES = (
     Splash(
         "splash_arcade",
-        1.0,
+        0.25,
         3.0,
         True
     ),
     Splash(
         "splash_dragon",
-        1.0,
+        0.25,
         3.0,
         False,
         True
     ),
     Splash(
         "splash_digi",
-        0.1,
+        0.025,
         3.0,
         False
     )
@@ -62,7 +64,7 @@ class SplashView(View):
         self._splash_timer = 0.0
 
         self._splash_sprite.scale = self._current_splash.scale
-        self._splash_sprite.texture = get_texture(self._current_splash.src)
+        self._splash_sprite.texture = load_texture(self._current_splash.src)
         self._splash_sprite.scale = self._current_splash.scale
         self._splash_sprite.alpha = 255 * (not self._current_splash.do_fade_in)
 
@@ -86,7 +88,7 @@ class SplashView(View):
             self._next_splash()
             return
 
-        self._splash_sprite.position = self.window.center
+        self._splash_sprite.position = (0.0, 0.0)
 
         splash_fraction = self._splash_timer / self._current_splash.duration
 

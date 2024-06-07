@@ -132,6 +132,9 @@ class SecondOrderAnimatorKClamped(SecondOrderAnimatorBase):
     """
 
     def update(self, dt: float, nx: A, dx: Optional[A] = None):
+        if not dt:
+            return self.y
+
         dx = dx or (nx - self.xp) / dt
         self.xp = nx
         # Clamping k2 it isn't physically correct, but protects against the sim collapsing with lag spikes.

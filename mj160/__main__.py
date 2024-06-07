@@ -1,17 +1,18 @@
-from dragon_engine.config import update_config
-from dragon_engine.window import DragonWindow
+from mj160 import initialise, launch
+
+from mj160.main_menu import MainMenuView
 
 
 def main():
-    update_config(
+    initialise(
         {
-            "win_resolution": (1280, 720),
+            "win_resolution": (320, 180),
+            "win_min_size": (1280, 820),
             "win_name": "Mini-Jam 160: Rogue-Light",
             "win_fullscreen": False
         }
     )
-    win = DragonWindow()
-    win.run()
+    launch(MainMenuView)
 
 
 if __name__ == '__main__':
