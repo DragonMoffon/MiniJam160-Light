@@ -18,4 +18,4 @@ maintainers = [
 ]
 
 [tool.setuptools]
-packages = ["mj160", "dragon_engine"]
+packages = ["mj160"]

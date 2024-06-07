@@ -1,5 +1,7 @@
+from logging import getLogger
 from typing import Generator
 
+logger = getLogger("mj160")
 
 class Floor:
 
@@ -34,12 +36,12 @@ class Tutorial(Floor):
 
     def _generate_floor(self):
         yield False
-        print("one two baby")
-        yield False
-        print("done yeah")
+        logger.info("one two baby")
 
         for _ in range(1000):
             yield False
+
+        logger.info("done yeah")
 
         return True
 
