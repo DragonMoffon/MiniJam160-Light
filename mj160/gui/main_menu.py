@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import Callable
 
 from pyglet.input import get_controllers
@@ -8,10 +9,12 @@ from arcade.experimental.input.manager import InputDevice
 
 from mj160.util import ProceduralAnimator, CLOCK
 from mj160.data import load_texture
+from mj160.util.procedural_animator import SecondOrderAnimatorKClamped
 from mj160.window import DragonWindow
 
-
 from mj160.game_view import GameView
+
+logger = getLogger("mj160")
 
 
 class GameLogo(Sprite):
@@ -24,7 +27,7 @@ class MainMenuButton(Sprite):
 
     def __init__(self, x: float, y: float, texture: Texture, callback: Callable):
         super().__init__(center_x=x, center_y=y, path_or_texture=texture)
-        self.hover_animator: ProceduralAnimator = ProceduralAnimator(2.0, 1.0, 0.5, 1.0, 1.0, 0.0)
+        self.hover_animator: SecondOrderAnimatorKClamped = ProceduralAnimator(2.0, 1.0, 0.5, 1.0, 1.0, 0.0)
         self.target_scale: float = 1.0
         self.clicking = False
         self.selected = False
@@ -37,7 +40,7 @@ class MainMenuButton(Sprite):
         if self.clicking or self.selected:
             return
         self.selected = True
-        self.target_scale = 2.0
+        self.target_scale = 1.333
 
     def deselect(self):
         self.selected = False
@@ -46,7 +49,7 @@ class MainMenuButton(Sprite):
 
     def start_click(self):
         self.clicking = True
-        self.target_scale = 0.5
+        self.target_scale = 1 / 1.333
 
     def finish_click(self):
         if self.selected:
@@ -74,7 +77,7 @@ class MainMenuGui:
             self.window.input_manager.bind_controller(controllers[0])
 
         start_: MainMenuButton = MainMenuButton(0.0, 0.0, load_texture("menu_sheet", width=64, height=16), lambda: self.window.show_view(GameView()))
-        options_: MainMenuButton = MainMenuButton(0.0, -32.0, load_texture("menu_sheet", x=64, width=64, height=16), lambda: print("NOT IMPLIMENTED"))
+        options_: MainMenuButton = MainMenuButton(0.0, -32.0, load_texture("menu_sheet", x=64, width=64, height=16), lambda: logger.error("NOT IMPLEMENTED"))
         quit_: MainMenuButton = MainMenuButton(0.0, -64.0, load_texture("menu_sheet", x=128, width=64, height=16), lambda: self.window.start_close())
 
         self.buttons.extend((start_, options_, quit_))

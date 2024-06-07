@@ -1,9 +1,13 @@
+from logging import getLogger
+
 from arcade import Sprite, SpriteList, get_window, Window
 from arcade.experimental.input import ActionState
 
 from mj160.window import DragonWindow
 from mj160.state import PlayerState
 from mj160.util import CLOCK, CONFIG
+
+logger = getLogger("mj160")
 
 
 class Torch:
@@ -31,4 +35,4 @@ class Player:
         pass
 
     def on_action(self, action: str, state: ActionState):
-        print(action, state)
+        logger.debug(action, state)

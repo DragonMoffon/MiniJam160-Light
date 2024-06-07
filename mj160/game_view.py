@@ -1,4 +1,4 @@
-from arcade import draw_text
+from arcade import Text
 
 from mj160.window import DragonView
 
@@ -9,6 +9,12 @@ class GameView(DragonView):
 
     def __init__(self):
         super().__init__()
+
+        self.loading_text = Text(
+                "Floor Generating",
+                x=0, y=0, anchor_x='center', anchor_y='center',
+                font_name='GohuFont 11 Nerd Font Mono'
+            )
 
     def on_show_view(self):
         self.setup()
@@ -32,8 +38,4 @@ class GameView(DragonView):
         self.clear()
 
         if RunState.floor and not RunState.floor.generated:
-            draw_text(
-                "Floor Generating",
-                x=0, y=0, anchor_x='center', anchor_y='center',
-                font_name='GohuFont 11 Nerd Font Mono'
-            )
+            self.loading_text.draw()
