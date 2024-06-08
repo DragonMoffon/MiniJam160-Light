@@ -2,6 +2,7 @@ from arcade import get_window, ArcadeContext, camera, LBWH
 import arcade.gl as gl
 
 from mj160.util import CONFIG
+from mj160.light_state import LightState
 
 
 class UpscaleFBO:
@@ -28,7 +29,10 @@ class UpscaleFBO:
                     wrap_x=gl.CLAMP_TO_BORDER,
                     wrap_y=gl.CLAMP_TO_BORDER
                 )
-            ]
+            ],
+            depth_attachment=ctx.depth_texture(
+                size=(wr, hr)
+            )
         )
         self._screen: gl.Framebuffer = ctx.screen
 
@@ -50,6 +54,9 @@ class UpscaleFBO:
         self._screen.clear()
 
         self.display_camera.use()
+
+        LightState.render(self._fbo.color_attachments[0], self.into_camera)
+        LightState.display()
 
         self._fbo.color_attachments[0].use()
         self._geo.render(self._prog)

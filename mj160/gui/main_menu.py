@@ -7,7 +7,7 @@ from arcade import Sprite, SpriteList, Texture, get_window, get_sprites_at_point
 from arcade.experimental.input import ActionState
 from arcade.experimental.input.manager import InputDevice
 
-from mj160.util import ProceduralAnimator, CLOCK
+from mj160.util import ProceduralAnimator, CLOCK, CONFIG
 from mj160.data import load_texture
 from mj160.util.procedural_animator import SecondOrderAnimatorKClamped
 from mj160.window import DragonWindow
@@ -27,6 +27,7 @@ class MainMenuButton(Sprite):
 
     def __init__(self, x: float, y: float, texture: Texture, callback: Callable):
         super().__init__(center_x=x, center_y=y, path_or_texture=texture)
+        self.depth = -1.0
         self.hover_animator: SecondOrderAnimatorKClamped = ProceduralAnimator(2.0, 1.0, 0.5, 1.0, 1.0, 0.0)
         self.target_scale: float = 1.0
         self.clicking = False
@@ -66,17 +67,19 @@ class MainMenuGui:
 
         self.selected_button: MainMenuButton = None
 
+        self._mouse: Sprite = None
+
     def setup(self):
         self.buttons = SpriteList()
 
-        center = self.window.center
+        self._mouse: Sprite = Sprite(load_texture("game_sheet", y=32, width=16, height=16))
 
         controllers = get_controllers()
         if controllers and controllers[0] != self.window.input_manager.controller:
             self.window.input_manager.unbind_controller()
             self.window.input_manager.bind_controller(controllers[0])
 
-        start_: MainMenuButton = MainMenuButton(0.0, 0.0, load_texture("menu_sheet", width=64, height=16), lambda: self.window.show_view(GameView()))
+        start_: MainMenuButton = MainMenuButton(0.0, 0.0, load_texture("menu_sheet", width=64, height=16), lambda: self.window.next_view(GameView))
         options_: MainMenuButton = MainMenuButton(0.0, -32.0, load_texture("menu_sheet", x=64, width=64, height=16), lambda: logger.error("NOT IMPLEMENTED"))
         quit_: MainMenuButton = MainMenuButton(0.0, -64.0, load_texture("menu_sheet", x=128, width=64, height=16), lambda: self.window.start_close())
 
@@ -102,7 +105,7 @@ class MainMenuGui:
             self.selected_button.start_click()
 
     def release_button(self):
-        if self.selected_button:
+        if self.selected_button and self.selected_button.clicking:
             self.selected_button.finish_click()
 
     def on_action(self, action: str, state: ActionState):
@@ -137,24 +140,23 @@ class MainMenuGui:
         if self.selected_button and self.selected_button.clicking:
             return
 
-        if self.window.input_manager.active_device == InputDevice.KEYBOARD:
-            mouse_x = self.window.input_manager.axis('player-look_horizontal')
-            mouse_y = self.window.input_manager.axis('player-look_vertical')
-
-            mouse_x, mouse_y = self.window.map_to_upscale((mouse_x, mouse_y))
-            mouse_x, mouse_y, _ = self.window.upscale_renderer.into_camera.unproject((mouse_x, mouse_y, 0.0))
-
-            collisions = get_sprites_at_point((mouse_x, mouse_y), self.buttons)
-
+        if self._mouse:
+            look_x, look_y = self.window.input_manager.axis('player-look_horizontal'), self.window.input_manager.axis('player-look_vertical')
+            match self.window.input_manager.active_device:
+                case InputDevice.KEYBOARD:
+                    mouse_x, mouse_y, _ = self.window.upscale_renderer.into_camera.unproject(self.window.map_to_upscale((look_x, look_y)))
+                    self._mouse.position = (mouse_x, mouse_y)
+                case InputDevice.CONTROLLER:
+                    o_pos = self._mouse.position
+                    self._mouse.position = o_pos[0] + look_x * CLOCK.dt * CONFIG["controller_look_speed"], o_pos[1] + look_y * CLOCK.dt * CONFIG['controller_look_speed']
+            collisions = get_sprites_at_point(self._mouse.position, self.buttons)
             self.select_button(None if not collisions else collisions[-1])
-        else:
-            if self.selected_button is None:
-                self.select_button(self.buttons[0])
 
     def draw(self):
         if not self.buttons:
             return
         self.buttons.draw(pixelated=True)
+        self._mouse.draw(pixelated=True)
 
     def on_show(self):
         self.window.input_manager.register_action_handler(self.on_action)

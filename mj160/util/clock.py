@@ -18,7 +18,7 @@ class Clock:
         self._current_dt = dt
 
     def time_since(self, t: float):
-        return self._elapse_speed - t
+        return self._elapsed_time - t
 
     def frame_since(self, f: int):
         return self._current_frame - f

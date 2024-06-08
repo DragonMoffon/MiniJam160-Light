@@ -1,12 +1,7 @@
-from typing import TYPE_CHECKING
-from random import randint, seed
+from random import seed, randint
 
-from arcade import Sprite, SpriteList
 
 from mj160.floors import Floor, floors
-
-if TYPE_CHECKING:
-    from mj160.window import DragonWindow
 
 
 class _RunState:
@@ -63,30 +58,3 @@ class _RunState:
 
 
 RunState = _RunState()
-
-
-class _PlayerState:
-
-    def __init__(self):
-        self.sprite_renderer: SpriteList = None
-
-    def hard_reset(self):
-        """
-        Reset as if the game just launched
-        """
-        self.sprite_renderer: SpriteList = SpriteList()
-
-    def run_reset(self):
-        """
-        reset as if a new run started
-        """
-        pass
-
-    def floor_reset(self):
-        """
-        reset as if entering a new floor
-        """
-        pass
-
-
-PlayerState = _PlayerState()

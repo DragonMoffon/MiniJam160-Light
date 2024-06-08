@@ -6,6 +6,7 @@ from digiformatter import logger as digilogger
 from mj160 import initialise, launch
 from mj160.main_menu import MainMenuView
 
+
 def setup_logging():
     logging.basicConfig(level=WARN)
     dfhandler = digilogger.DigiFormatterHandler()
@@ -23,7 +24,7 @@ def main():
     initialise(
         {
             "win_resolution": (320, 180),
-            "win_min_size": (1280, 820),
+            "win_min_size": (1280, 720),
             "win_name": "Mini-Jam 160: Rogue-Light",
             "win_fullscreen": False
         }

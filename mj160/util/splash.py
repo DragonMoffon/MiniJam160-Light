@@ -30,12 +30,13 @@ SPLASHES = (
         False,
         True
     ),
-    Splash(
-        "splash_digi",
-        0.025,
-        3.0,
-        False
-    )
+#    Splash(
+#        "splash_digi",
+#        0.025,
+#        3.0,
+#        False,
+#        True
+#    )
 )
 
 

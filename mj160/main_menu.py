@@ -1,7 +1,7 @@
 from mj160.window import DragonView
 from mj160.gui.main_menu import MainMenuGui
 
-from mj160.state import RunState
+from mj160.run_state import RunState
 
 
 class MainMenuView(DragonView):

@@ -10,6 +10,7 @@ from mj160.util.config import CONFIG
 from mj160.util.splash import SplashView
 from mj160.util.clock import CLOCK
 from mj160.util.input import setup_input
+from mj160.light_state import LightState
 
 
 from mj160.util.upscale_fbo import UpscaleFBO
@@ -26,7 +27,8 @@ class DragonWindow(Window):
     def __init__(self, next_view: type[DragonView]):
         w, h = CONFIG['win_min_size']
         super().__init__(w, h, CONFIG['win_name'], fullscreen=CONFIG['win_fullscreen'], center_window=True,
-                         update_rate=CONFIG['game_fps'], draw_rate=CONFIG['game_dps'])
+                         update_rate=CONFIG['game_fps'], draw_rate=CONFIG['game_dps'], vsync=True)
+        LightState.initialise()
         self.input_manager: InputManager = InputManager()
         setup_input(self.input_manager)
 
@@ -35,10 +37,25 @@ class DragonWindow(Window):
         self.upscale_renderer.use()
         self.show_view(SplashView(next_view))
 
+        self.set_mouse_visible(False)
+
         self.closing = False
+        self._next_view: type[DragonView] = None
+        self._next_view_args: tuple = ()
+        self._next_view_kwargs: dict = {}
+
+        self.ctx.enable(self.ctx.DEPTH_TEST)
+
+    def on_mouse_enter(self, x: int, y: int):
+        self.set_mouse_visible(False)
 
     def start_close(self):
         self.closing = True
+
+    def next_view(self, view: type[DragonView], *args, **kwargs):
+        self._next_view = view
+        self._next_view_args = args
+        self._next_view_kwargs = kwargs
 
     def clear(
         self,
@@ -56,6 +73,10 @@ class DragonWindow(Window):
 
         if self.closing:
             self.close()
+
+        if self._next_view is not None:
+            self.show_view(self._next_view(*self._next_view_args, **self._next_view_kwargs))
+            self._next_view = None
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         self.input_manager.active_device = InputDevice.KEYBOARD
