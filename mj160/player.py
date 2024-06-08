@@ -10,6 +10,7 @@ from arcade.experimental.input import ActionState
 from arcade.experimental.input.manager import InputDevice
 
 from mj160.run_state import RunState
+from mj160.light_state import LightState, Light
 from mj160.window import DragonWindow
 from mj160.util import CLOCK, CONFIG, ProceduralAnimator
 from mj160.data import load_texture
@@ -86,6 +87,7 @@ class Player:
         length = min(CONFIG['torch_move_radius'], diff.mag)
         self._state.aim = diff.normalize() * length
         self._torch_sprite.position = self._body_sprite.center_x + self._state.aim.x, self._body_sprite.center_y + self._state.aim.y
+        LightState.modify_directly(0, Light(1.0, 0.4, 0.0, self._torch_sprite.center_x, self._torch_sprite.center_y, 100.0))
 
         move_x, move_y = input_manager.axis("player-move_horizontal"), input_manager.axis("player-move_vertical")
         if not (move_x or move_y):

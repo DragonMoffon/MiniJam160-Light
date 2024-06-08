@@ -49,7 +49,7 @@ class GameView(DragonView):
                 PlayerState.player_manager.enable()
                 PlayerState.player_manager.spawn()
                 LightState.enable()
-                LightState.add_light(Light(1.0, 0.0, 1.0, 0.0, 0.0, 100.0))
+                LightState.add_light(Light(1.0, 0.4, 0.0, 0.0, 0.0, 500.0))
 
     def on_draw(self):
         if RunState.floor and not RunState.floor.generated:

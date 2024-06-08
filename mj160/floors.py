@@ -172,7 +172,7 @@ class Tutorial(Floor):
             l, r, u, d, (x, y) = location[0] - 1, location[0] + 1, location[1] + 1, location[1] - 1, location
             dirs = (
                 (l, y), (r, y), (x, u), (x, d),
-                (l, u), (r, u), (l, d), (r, r)
+                (l, u), (r, u), (l, d), (r, d)
             )
 
             tile.place(location, neighbors=set(loc for loc in dirs if (0 <= loc[0] < 10) and (0 <= loc[1] < 10)))

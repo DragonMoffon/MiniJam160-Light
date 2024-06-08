@@ -119,13 +119,13 @@ class _LightState:
                 yield light.s
                 yield 0.0  ## Padding
 
-        _buffer_size = 4 * (1 + 8 * len(self._lights))
+        _buffer_size = 4 * (4 + 8 * len(self._lights))
         if self._light_buffer is None:
             self._light_buffer = self.ctx.buffer(reserve=_buffer_size)
         elif self._light_buffer.size != _buffer_size:
             self._light_buffer.orphan(size=_buffer_size)
 
-        byte_data = pack(f'i {len(self._lights) * 8}f', len(self._lights), *_linearise())
+        byte_data = pack(f'i i i i {len(self._lights) * 8}f', len(self._lights), 0, 0, 0, *_linearise())
         self._light_buffer.write(byte_data)
 
     def render(self, source: gl.Texture2D, camera: Camera2D):
@@ -134,22 +134,12 @@ class _LightState:
 
         with self.render_target.activate():
             bl = camera.bottom_left
-            horiz = camera.bottom_right - bl
-            vert = camera.top_left - bl
 
-            self.program['view_pos'] = bl.x, bl.y
-            self.program['view_dir'] = horiz.x, horiz.y, vert.x, vert.y
+            self.program['view_area'] = bl.x, bl.y, camera.width, camera.height
 
             source.use()
             self._light_buffer.bind_to_storage_buffer()
             self.geo.render(self.program)
-
-    def display(self):
-        if self.program is None or not self._is_enabled:
-            return
-
-        self.render_target.color_attachments[0].use()
-        self.geo.render(self.display_program)
 
 
 LightState = _LightState()
