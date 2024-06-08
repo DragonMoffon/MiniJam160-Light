@@ -20,6 +20,11 @@ class _PlayerState:
 
         self.aim: Vec2 = Vec2(0.0, 0.0)
 
+        self.embers: int = 0
+        self.ember_strength: int = 0
+        self.move_cost: int = 0
+        self.move_track: int = 0
+
     def hard_reset(self):
         """
         Reset as if the game just launched
@@ -35,6 +40,10 @@ class _PlayerState:
         self.move_speed: float = float('inf')
 
         self.aim: Vec2 = Vec2(0.0, 0.0)
+
+        self.embers: int = 0  # Your health / radius of light / mana for abilities
+        self.move_cost: int = 0  # Number of moves it takes to lose an ember
+        self.move_track: int = 0  # The number of moves left till you lose an ember
 
     def run_reset(self):
         """
@@ -52,6 +61,10 @@ class _PlayerState:
 
         self.aim: Vec2 = Vec2(0.0, 0.0)
 
+        self.embers = 16
+        self.move_cost = 4
+        self.move_track = 4
+
     def floor_reset(self):
         """
         reset as if entering a new floor
@@ -62,6 +75,8 @@ class _PlayerState:
         self.last_move: float = CLOCK.time
 
         self.aim: Vec2 = Vec2(0.0, 0.0)
+
+        self.move_track = 4
 
 
 PlayerState = _PlayerState()

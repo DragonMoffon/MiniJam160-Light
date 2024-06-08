@@ -50,7 +50,6 @@ class UpscaleFBO:
         self._fbo.clear(color=(0, 0, 0, 255))
 
     def display(self):
-        self._ctx.disable(self._ctx.DEPTH_TEST)
         LightState.render(self._fbo.color_attachments[0], self.into_camera)
         LightState.render_target.color_attachments[0].use()
         self._geo.render(self._prog)
@@ -67,4 +66,3 @@ class UpscaleFBO:
         self._fbo.clear()
 
         self.into_camera.use()
-        self._ctx.enable(self._ctx.DEPTH_TEST)

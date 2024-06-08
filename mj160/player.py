@@ -31,7 +31,9 @@ class Player:
 
         self._renderer: SpriteList = SpriteList()
         self._body_sprite: Sprite = Sprite(load_texture("game_sheet", y=16, width=16, height=16))
+        self._body_sprite.depth = -0.5
         self._torch_sprite: Sprite = Sprite(load_texture("game_sheet", y=32, width=16, height=16))
+        self._torch_sprite.depth = -0.5
 
         self._renderer.extend((self._body_sprite, self._torch_sprite))
 
@@ -87,7 +89,7 @@ class Player:
         length = min(CONFIG['torch_move_radius'], diff.mag)
         self._state.aim = diff.normalize() * length
         self._torch_sprite.position = self._body_sprite.center_x + self._state.aim.x, self._body_sprite.center_y + self._state.aim.y
-        LightState.modify_directly(0, Light(1.0, 0.4, 0.0, self._torch_sprite.center_x, self._torch_sprite.center_y, 100.0))
+        LightState.modify_directly(0, Light(1.0, 0.4, 0.0, self._torch_sprite.center_x, self._torch_sprite.center_y, 16.0 * self._state.embers))
 
         move_x, move_y = input_manager.axis("player-move_horizontal"), input_manager.axis("player-move_vertical")
         if not (move_x or move_y):
@@ -114,6 +116,13 @@ class Player:
         self._state.y = n_y
 
         x, y = RunState.floor.move(n_x, n_y)
+        self._state.move_track -= 1
+        if self._state.move_track <= 0:
+            self._state.embers -= 1
+            self._state.move_track = self._state.move_cost
+
+        if self._state.embers < 0:
+            raise ValueError("Ded")
 
         self._body_sprite.position = x, y
 
