@@ -1,4 +1,4 @@
-from random import random
+from random import random, choices
 
 from mj160.util import CLOCK, CONFIG
 from mj160.states.light import LightState, Light
@@ -63,6 +63,15 @@ class _EmberState:
     def update(self):
         for brazier in self.braziers:
             brazier.update()
+
+
+    def get_weighted_brazier(self):
+        frac = sum(b.embers for b in self.braziers) or 1.0
+        return choices(
+            population=self.braziers,
+            weights=tuple(b.embers / frac for b in self.braziers),
+            k=1
+        )[-1]
 
 
 EmberState = _EmberState()

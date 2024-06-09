@@ -12,6 +12,9 @@ from mj160.states import PlayerState, LightState, MapState, Light
 class PlayerManager:
 
     def __init__(self):
+        self.move_sound = load_audio("blip_e")
+        self.ember_sound = load_audio("ember")
+
         self._window: DragonWindow = get_window()
 
         self.renderer: SpriteList = SpriteList()
@@ -87,6 +90,7 @@ class PlayerManager:
         x, y = MapState.move(n_x, n_y)
         PlayerState.move_track -= 1
         if PlayerState.move_track <= 0:
+            self.ember_sound.play(CONFIG['game_volume'])
             PlayerState.embers = max(0, PlayerState.embers - 1)
             PlayerState.move_track = PlayerState.move_cost
 

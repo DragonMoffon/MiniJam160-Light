@@ -1,11 +1,10 @@
 from typing import Protocol
 
-from arcade import Sprite, SpriteList
-
+from arcade import Sprite, SpriteList, Sound
 
 from mj160.states import MapState, Tile, EmberState, Brazier, PlayerState
 from mj160.util import CONFIG
-from mj160.data import load_texture
+from mj160.data import load_texture, load_audio
 
 MAP = (
     (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
@@ -43,14 +42,19 @@ class EntranceTile(Tile):
 
 
 class BrazierTile(Tile):
+    brazier_sound: Sound = None
 
     def __init__(self, i_x, i_y):
         super().__init__(i_x, i_y, True, False)
+        if BrazierTile.brazier_sound is None:
+            BrazierTile.brazier_sound = load_audio("charge")
+
         self.brazier: Brazier = Brazier(i_x*CONFIG['floor_tile_size'], i_y*CONFIG['floor_tile_size'], 4)
         EmberState.add_brazier(self.brazier)
 
     def interact(self):
         if self.brazier.embers:
+            BrazierTile.brazier_sound.play(CONFIG['game_volume'])
             PlayerState.embers = min(16, PlayerState.embers + self.brazier.pull())
             PlayerState.move_track = PlayerState.move_cost
 

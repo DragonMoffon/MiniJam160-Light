@@ -10,6 +10,7 @@ config: dict = TypedDict(
         "win_name": str,
         "game_fps": float,
         "game_dps": float,
+        "game_volume": float,
         "floor_tile_size": float,
         "torch_move_radius": float,
         "controller_look_speed": float
@@ -23,6 +24,7 @@ CONFIG: config = {
     "win_name": 'DragonEngine',
     "game_fps": 1.0 / 120.0,
     "game_dps": 1.0 / 60.0,
+    "game_volume": 0.5,
     "floor_tile_size": 16.0,
     "torch_move_radius": 60.0,
     "controller_look_speed": 150.0

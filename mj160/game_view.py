@@ -50,6 +50,8 @@ class GameView(DragonView):
         self.spirit.update()
 
     def on_draw(self):
+        self.clear(color_normalized=(0.75, 0.75, 0.75, 1.0))
+
         self.map.draw()
 
         self.player.draw()
