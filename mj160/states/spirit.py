@@ -25,7 +25,7 @@ class Spirit:
         self.mode: SpiritMode = SpiritMode.IDLE
         self.target: Vec2 = Vec2(0.0, 0.0)
         self.target_brazier: Brazier = None
-        self.animator: ProceduralAnimator = ProceduralAnimator(0.7, 0.5, 2.0, Vec2(0.0, 0.0), Vec2(0.0, 0.0), Vec2(0.0, 0.0))
+        self.animator: ProceduralAnimator = ProceduralAnimator(0.75, 0.5, 2.0, Vec2(0.0, 0.0), Vec2(0.0, 0.0), Vec2(0.0, 0.0))
 
     def spawn(self, i_x: int, i_y: int, s: int):
         self.strength = s
@@ -62,7 +62,8 @@ class Spirit:
             self.light.b = -1.0
 
     def kill(self):
-        LightState.remove_light(self.light)
+        if self.light in LightState.lights:
+            LightState.remove_light(self.light)
 
 
 class _SpiritState:

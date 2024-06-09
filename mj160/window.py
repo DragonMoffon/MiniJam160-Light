@@ -7,23 +7,22 @@ from arcade.experimental.input.manager import InputManager, InputDevice
 from arcade.types import RGBOrA255, RGBANormalized
 
 from mj160.util.config import CONFIG
-from mj160.util.splash import SplashView
 from mj160.util.clock import CLOCK
 from mj160.util.input import setup_input
 
+from mj160.view import DragonView
+
+from mj160.util.splash import SplashView
+from mj160.main_menu import MainMenuView
+from mj160.game_view import GameView
+from mj160.lose_view import LoseView
 
 from mj160.util.upscale_fbo import UpscaleFBO
 
 
-class DragonView(View):
-
-    def __init__(self):
-        super().__init__()
-
-
 class DragonWindow(Window):
 
-    def __init__(self, next_view: type[DragonView]):
+    def __init__(self):
         w, h = CONFIG['win_min_size']
         super().__init__(w, h, CONFIG['win_name'], fullscreen=CONFIG['win_fullscreen'], center_window=True,
                          update_rate=CONFIG['game_fps'], draw_rate=CONFIG['game_dps'], vsync=True)
@@ -33,7 +32,7 @@ class DragonWindow(Window):
         self.upscale_renderer: UpscaleFBO = UpscaleFBO()
 
         self.upscale_renderer.use()
-        self.show_view(SplashView(next_view))
+        self.show_view(SplashView(MainMenuView))
 
         self.set_mouse_visible(False)
 
@@ -41,6 +40,15 @@ class DragonWindow(Window):
         self._next_view: type[DragonView] = None
         self._next_view_args: tuple = ()
         self._next_view_kwargs: dict = {}
+
+    def go_to_menu(self):
+        self.next_view(MainMenuView)
+
+    def go_to_game(self):
+        self.next_view(GameView)
+
+    def go_to_lose(self):
+        self.next_view(LoseView)
 
     def on_mouse_enter(self, x: int, y: int):
         self.set_mouse_visible(False)

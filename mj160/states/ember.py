@@ -47,7 +47,7 @@ class _EmberState:
     def reset_braziers(self):
         for brazier in self.braziers:
             if brazier.light in LightState.lights:
-                LightState.remove_lights(brazier.light)
+                LightState.remove_light(brazier.light)
         self.braziers = []
 
     def add_brazier(self, brazier: Brazier):

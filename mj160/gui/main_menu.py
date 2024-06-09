@@ -1,5 +1,6 @@
+from __future__ import annotations
 from logging import getLogger
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
 
 from pyglet.input import get_controllers
 
@@ -10,11 +11,13 @@ from arcade.experimental.input.manager import InputDevice
 from mj160.util import ProceduralAnimator, CLOCK, CONFIG
 from mj160.data import load_texture
 from mj160.util.procedural_animator import SecondOrderAnimatorKClamped
-from mj160.window import DragonWindow
 
 from mj160.game_view import GameView
 
 logger = getLogger("mj160")
+
+if TYPE_CHECKING:
+    from mj160.window import DragonWindow
 
 
 class GameLogo(Sprite):
@@ -79,9 +82,9 @@ class MainMenuGui:
             self.window.input_manager.unbind_controller()
             self.window.input_manager.bind_controller(controllers[0])
 
-        start_: MainMenuButton = MainMenuButton(0.0, 0.0, load_texture("menu_sheet", width=64, height=16), lambda: self.window.next_view(GameView))
-        options_: MainMenuButton = MainMenuButton(0.0, -32.0, load_texture("menu_sheet", x=64, width=64, height=16), lambda: logger.error("NOT IMPLEMENTED"))
-        quit_: MainMenuButton = MainMenuButton(0.0, -64.0, load_texture("menu_sheet", x=128, width=64, height=16), lambda: self.window.start_close())
+        start_: MainMenuButton = MainMenuButton(0.0, 64, load_texture("menu_sheet", width=128, height=32), lambda: self.window.go_to_game())
+        options_: MainMenuButton = MainMenuButton(0.0, 0.0, load_texture("menu_sheet", y=32, width=128, height=32), lambda: logger.error("NOT IMPLEMENTED"))
+        quit_: MainMenuButton = MainMenuButton(0.0, -64.0, load_texture("menu_sheet", y=64, width=128, height=32), lambda: self.window.start_close())
 
         self.buttons.extend((start_, options_, quit_))
 

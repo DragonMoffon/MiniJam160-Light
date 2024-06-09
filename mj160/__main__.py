@@ -4,7 +4,6 @@ from logging import WARN, DEBUG
 from digiformatter import logger as digilogger
 
 from mj160 import initialise, launch
-from mj160.main_menu import MainMenuView
 
 
 def setup_logging():
@@ -29,7 +28,7 @@ def main():
             "win_fullscreen": False
         }
     )
-    launch(MainMenuView)
+    launch()
 
 
 if __name__ == '__main__':

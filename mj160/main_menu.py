@@ -1,4 +1,4 @@
-from mj160.window import DragonView
+from mj160.view import DragonView
 from mj160.gui.main_menu import MainMenuGui
 
 

@@ -5,7 +5,6 @@ license = {text = "MIT License"}
 readme="README.md"
 version="0.0"
 dependencies=[
-    "imgui[pyglet]",
     "digiformatter",
     "arcade@ git+https://github.com/pythonarcade/arcade#egg=development"
 ]

@@ -9,6 +9,6 @@ def initialise(_config: cfg.config):
     load_font("gohu")
 
 
-def launch(next_view: type[DragonView]):
-    win = DragonWindow(next_view)
+def launch():
+    win = DragonWindow()
     win.run()

@@ -1,11 +1,11 @@
 from math import ceil
-from random import randint, choice, random
+from random import randint, random
 
 from pyglet.math import Vec2
 
 from mj160.util import CLOCK, CONFIG
 from mj160.data import load_audio
-from mj160.states import PlayerState, MapState, EmberState, SpiritState, MAP
+from mj160.states import PlayerState, MapState, EmberState, SpiritState, GameState, MAP
 from mj160.states.spirit import SpiritMode
 
 
@@ -33,8 +33,13 @@ class SpiritManager:
             t_x, t_y = round(spirit.target.x / tile_size), round(spirit.target.y / tile_size)
             i_x, i_y = round(new_pos.x / tile_size), round(new_pos.y / tile_size)
 
-            if not spirit.mode == SpiritMode.KILL and i_x - 1 <= PlayerState.x <= i_x + 1 and i_y + 1 <= PlayerState.y <= i_y + 1:
-                spirit.animator.dy = new_pos - Vec2(PlayerState.x * tile_size, PlayerState.y * tile_size)
+            # if not spirit.mode == SpiritMode.KILL:
+            #     next_pos = new_pos + spirit.animator.dy
+            #     n_x, n_y = round(next_pos.x / tile_size), round(next_pos.y / tile_size)
+            #     if ((n_x - 1 <= PlayerState.x <= n_x + 1 and n_y + 1 <= PlayerState.y <= n_y + 1) or
+            #         (i_x - 1 <= PlayerState.x <= i_x + 1 and i_y + 1 <= PlayerState.y <= i_y + 1)):
+            #         spirit.mode = SpiritMode.IDLE
+            #         spirit.target = next_pos + Vec2((PlayerState.embers + 2) * tile_size, random() * 2.0 * 3.1415962)
 
             spirit.light.x, spirit.light.y = new_pos
 
@@ -58,7 +63,10 @@ class SpiritManager:
                         if i_x - 2 <= PlayerState.x <= i_x + 2 and i_y - 2 <= PlayerState.y <= i_y + 2:
                             spirit.mode = SpiritMode.PLAYER
                         else:
-                            spirit.target = spirit.target + Vec2.from_polar(100 + 250.0 * random(), random() * 2.0 * 3.1415962)
+                            nt_x = min(len(MAP[0]), max(0, t_x + randint(-3, 3)))
+                            nt_y = min(len(MAP), max(0, t_y + randint(-3, 3)))
+
+                            spirit.target = Vec2(nt_x * tile_size, nt_y * tile_size)
 
                 case SpiritMode.BRAZIER:
                     # Move to a spot near a target brazier
@@ -120,12 +128,14 @@ class SpiritManager:
             if i_x == PlayerState.x and i_y == PlayerState.y:
                 self._hurt_sound.play(CONFIG['game_volume'])
                 PlayerState.embers = max(0, PlayerState.embers - spirit.strength)
+                GameState.total_spirit_strength += spirit.strength
                 SpiritState.kill_spirit(spirit)
                 continue
 
             if i_x == round(PlayerState.torch.x / tile_size) and i_y == round(PlayerState.torch.y / tile_size):
                 self._kill_sound.play(CONFIG['game_volume'])
                 PlayerState.embers = max(0, PlayerState.embers - 1)
+                GameState.total_spirit_strength += spirit.strength
                 SpiritState.kill_spirit(spirit)
                 continue
 

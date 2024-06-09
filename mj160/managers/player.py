@@ -1,12 +1,17 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from arcade import Sprite, SpriteList, get_window
 from arcade.experimental.input.manager import InputDevice
 
 from pyglet.math import Vec2
 
-from mj160.window import DragonWindow
 from mj160.data import load_texture, load_audio
 from mj160.util import CLOCK, CONFIG, ProceduralAnimator
 from mj160.states import PlayerState, LightState, MapState, Light
+
+if TYPE_CHECKING:
+    from mj160.window import DragonWindow
 
 
 class PlayerManager:
@@ -88,11 +93,12 @@ class PlayerManager:
         PlayerState.y = n_y
 
         x, y = MapState.move(n_x, n_y)
-        PlayerState.move_track -= 1
+        PlayerState.move_track = max(0, PlayerState.move_track - 1)
         if PlayerState.move_track <= 0:
+            if PlayerState.embers > 0:
+                PlayerState.move_track = PlayerState.move_cost
             self.ember_sound.play(CONFIG['game_volume'])
             PlayerState.embers = max(0, PlayerState.embers - 1)
-            PlayerState.move_track = PlayerState.move_cost
 
         self._player_sprite.position = x, y
 
