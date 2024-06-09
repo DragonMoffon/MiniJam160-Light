@@ -52,6 +52,13 @@ class _LightState:
         self.bufferise()
         return len(self._lights) - 1
 
+    def remove_light(self, light: Light):
+        if not self.program:
+            raise ValueError("removing light before Lights have been initialised")
+
+        self._lights.remove(light)
+        self.bufferise()
+
     def get_light_idx(self, light: Light):
         if not self.program:
             raise ValueError("Tried to get light before before lights have been initialised")
@@ -65,7 +72,7 @@ class _LightState:
         return self._lights[idx]
 
     def clear_lights(self):
-        self._lights = []
+        self._lights = [Light(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]
         self.bufferise()
 
     def modify_light(self, old_light: Light, new_light: Light):
@@ -88,7 +95,7 @@ class _LightState:
     def initialise(self):
         self.ctx = get_window().ctx
 
-        self._lights = []  # Just start with the player's light active
+        self._lights = [Light(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]  # Just start with the player's light active
 
         self.program = self.ctx.program(
             vertex_shader=load_shader("lighting_vs"),
@@ -113,11 +120,11 @@ class _LightState:
                 yield light.r
                 yield light.g
                 yield light.b
-                yield 1.0  ## Padding
+                yield 1.0  # Padding
                 yield light.x
                 yield light.y
                 yield light.s
-                yield 0.0  ## Padding
+                yield 0.0  # Padding
 
         _buffer_size = 4 * (4 + 8 * len(self._lights))
         if self._light_buffer is None:

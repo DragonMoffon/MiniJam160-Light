@@ -44,8 +44,6 @@ class DragonWindow(Window):
         self._next_view_args: tuple = ()
         self._next_view_kwargs: dict = {}
 
-        self.ctx.enable(self.ctx.DEPTH_TEST)
-
     def on_mouse_enter(self, x: int, y: int):
         self.set_mouse_visible(False)
 
@@ -86,6 +84,10 @@ class DragonWindow(Window):
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         self.input_manager.active_device = InputDevice.KEYBOARD
+
+    def show_view(self, new_view: 'View'):
+        super().show_view(new_view)
+        self.upscale_renderer.use()
 
     def on_draw(self):
         self.upscale_renderer.display()

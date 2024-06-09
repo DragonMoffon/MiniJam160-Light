@@ -28,5 +28,5 @@ void main() {
         light += light_colour * exp(-strength / light_data.z);
     }
 
-    fs_colour = vec4(texture(albedo, vs_uv).xyz * light.xyz, 1.0);
+    fs_colour = vec4(texture(albedo, vs_uv).xyz * light.xyz, 1.0) * 10.0;
 }

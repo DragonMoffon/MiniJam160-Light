@@ -1,8 +1,6 @@
 from mj160.window import DragonView
 from mj160.gui.main_menu import MainMenuGui
 
-from mj160.run_state import RunState
-
 
 class MainMenuView(DragonView):
 
@@ -18,7 +16,6 @@ class MainMenuView(DragonView):
         self.main_menu.draw()
 
     def on_show_view(self):
-        RunState.run_reset()
         self.main_menu.on_show()
 
     def on_hide_view(self):

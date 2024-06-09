@@ -2,7 +2,6 @@ from arcade import get_window, ArcadeContext, camera, LBWH
 import arcade.gl as gl
 
 from mj160.util import CONFIG
-from mj160.light_state import LightState
 
 
 class UpscaleFBO:
@@ -50,10 +49,6 @@ class UpscaleFBO:
         self._fbo.clear(color=(0, 0, 0, 255))
 
     def display(self):
-        LightState.render(self._fbo.color_attachments[0], self.into_camera)
-        LightState.render_target.color_attachments[0].use()
-        self._geo.render(self._prog)
-
         self._screen.use()
         self._screen.clear()
 
