@@ -10,7 +10,6 @@ from mj160.util.config import CONFIG
 from mj160.util.splash import SplashView
 from mj160.util.clock import CLOCK
 from mj160.util.input import setup_input
-from mj160.light_state import LightState
 
 
 from mj160.util.upscale_fbo import UpscaleFBO
@@ -28,7 +27,6 @@ class DragonWindow(Window):
         w, h = CONFIG['win_min_size']
         super().__init__(w, h, CONFIG['win_name'], fullscreen=CONFIG['win_fullscreen'], center_window=True,
                          update_rate=CONFIG['game_fps'], draw_rate=CONFIG['game_dps'], vsync=True)
-        LightState.initialise()
         self.input_manager: InputManager = InputManager()
         setup_input(self.input_manager)
 

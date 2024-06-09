@@ -3,7 +3,7 @@ from arcade import Text
 from mj160.window import DragonView
 
 from mj160.states import GameState, PlayerState, EmberState
-from mj160.managers import LightManager, PlayerManager, MapManager, EmberManager
+from mj160.managers import LightManager, PlayerManager, MapManager, EmberManager, SpiritManager
 
 from mj160.gui.game import EmberTracker
 
@@ -18,6 +18,7 @@ class GameView(DragonView):
         self.ember: EmberManager = None
         self.player: PlayerManager = None
         self.light: LightManager = None
+        self.spirit: SpiritManager = None
 
     def on_show_view(self):
         self.setup()
@@ -41,10 +42,14 @@ class GameView(DragonView):
             PlayerState.reset()
             self.player.spawn()
 
+        if not self.spirit:
+            self.spirit = SpiritManager()
+
     def on_update(self, delta_time: float):
         self.ember.update()
         self.map.update()
         self.player.update()
+        self.spirit.update()
 
     def on_draw(self):
         self.map.draw()

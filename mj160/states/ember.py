@@ -8,7 +8,7 @@ class Brazier:
 
     def __init__(self, x, y, embers):
         self.embers: int = embers
-        self.last_increase: float = CLOCK.time
+        self.next_increase: float = CLOCK.time + _EmberState.EMBER_RECHARGE + random() * _EmberState.EMBER_RANGE
         self.last_pull: float = CLOCK.time
         self.light: Light = Light(1.0, 0.4, 0.0, x, y, embers * CONFIG['floor_tile_size'])
 
@@ -16,6 +16,7 @@ class Brazier:
         embers = self.embers
         self.embers = 0
         self.last_pull = CLOCK.time
+        self.light.s = 0.0
         return embers
 
     def update(self):
@@ -25,20 +26,20 @@ class Brazier:
         if CLOCK.time_since(self.last_pull) < _EmberState.PULL_RECOVER:
             return
 
-        if CLOCK.time_since(self.last_increase) < _EmberState.EMBER_RECHARGE + random() * _EmberState.EMBER_RANGE:
+        if CLOCK.time < self.next_increase:
             return
-        self.last_increase = CLOCK.time
+        self.next_increase = CLOCK.time + _EmberState.EMBER_RECHARGE + random() * _EmberState.EMBER_RANGE
 
         self.embers += 1
-        self.light.s = self.embers * CONFIG['floor_tile_size']
+        self.light.s = self.embers * CONFIG['floor_tile_size'] * 0.5
 
 
 class _EmberState:
     MAX_BRAZIERS: int = 8
     EMBER_MAX: int = 16
-    PULL_RECOVER: float = 2.0
-    EMBER_RECHARGE: float = 1.0
-    EMBER_RANGE: float = 0.2
+    PULL_RECOVER: float = 4.0
+    EMBER_RECHARGE: float = 2.0
+    EMBER_RANGE: float = 0.75
 
     def __init__(self):
         self.braziers: list[Brazier] = []
@@ -54,6 +55,7 @@ class _EmberState:
             raise ValueError("Trying to add too many braziers")
 
         self.braziers.append(brazier)
+        LightState.add_light(brazier.light)
 
     def remove_brazier(self, brazier: Brazier):
         self.braziers.remove(brazier)

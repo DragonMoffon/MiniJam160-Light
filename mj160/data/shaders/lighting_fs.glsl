@@ -25,8 +25,8 @@ void main() {
 
         float strength = 4.0 * length(diff);
 
-        light += light_colour * exp(-strength / light_data.z);
+        light += light_colour * light_data.z / dot(diff, diff); // * exp(-strength / light_data.z);
     }
 
-    fs_colour = vec4(texture(albedo, vs_uv).xyz * light.xyz, 1.0) * 10.0;
+    fs_colour = vec4(texture(albedo, vs_uv).xyz * light.xyz, 1.0);
 }

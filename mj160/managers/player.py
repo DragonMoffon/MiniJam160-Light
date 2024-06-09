@@ -87,7 +87,7 @@ class PlayerManager:
         x, y = MapState.move(n_x, n_y)
         PlayerState.move_track -= 1
         if PlayerState.move_track <= 0:
-            PlayerState.embers -= 1
+            PlayerState.embers = max(0, PlayerState.embers - 1)
             PlayerState.move_track = PlayerState.move_cost
 
         self._player_sprite.position = x, y
@@ -96,6 +96,8 @@ class PlayerManager:
         self._window.upscale_renderer.into_camera.position = self.camera_animator.update(CLOCK.dt, Vec2(*self._player_sprite.position))
         self.look()
         self.move()
+
+        self._torch_light.s = PlayerState.embers * CONFIG['floor_tile_size']
 
     def draw(self):
         self.renderer.draw(pixelated=True)

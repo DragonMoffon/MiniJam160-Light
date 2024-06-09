@@ -23,10 +23,11 @@ class LightManager:
         self.display_prog: gl.Program = self.ctx.utility_textured_quad_program
 
         self.render_target: gl.framebuffer = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture(size=CONFIG['win_resolution'], filter=(gl.NEAREST, gl.NEAREST))]
+            color_attachments=[self.ctx.texture(size=CONFIG['win_resolution'], filter=(gl.NEAREST, gl.NEAREST), wrap_x=gl.CLAMP_TO_BORDER, wrap_y=gl.CLAMP_TO_BORDER)]
         )
 
-        self.geo: gl.Geometry = gl.geometry.quad_2d_fs()
+        self.render_geo: gl.Geometry = gl.geometry.quad_2d_fs()
+        self.display_geo: gl.Geometry = gl.geometry.quad_2d_fs()
 
     def draw(self):
         LightState.bufferise()
@@ -34,15 +35,16 @@ class LightManager:
         prev_fbo = self.ctx.active_framebuffer
 
         self.render_target.use()
+        self.render_target.clear()
         prev_fbo.color_attachments[0].use()
 
         b_l = self.upscale.into_camera.bottom_left
         w, h = self.upscale.into_camera.width, self.upscale.into_camera.height
         self.post_process_prog['view_area'] = b_l.x, b_l.y, w, h
-
-        self.geo.render(self.post_process_prog)
+        LightState.light_buffer.bind_to_storage_buffer()
+        self.render_geo.render(self.post_process_prog)
 
         prev_fbo.use()
         self.render_target.color_attachments[0].use()
-        LightState.light_buffer.bind_to_storage_buffer()
-        self.geo.render(self.display_prog)
+        self.display_geo.render(self.display_prog)
+
