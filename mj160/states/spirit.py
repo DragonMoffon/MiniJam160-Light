@@ -1,4 +1,5 @@
 from enum import Enum
+from random import random
 
 from pyglet.math import Vec2
 
@@ -18,7 +19,7 @@ class Spirit:
 
     def __init__(self):
         self.strength: int = 0
-        self.light: Light = Light(-1.0, -1.0, -1.0, 0.0, 0.0, 0.0)
+        self.light: Light = Light(-1.0, -1.0, 1.0, 0.0, 0.0, 0.0)
         self.birth_time: float = 0.0
         self.mode: SpiritMode = SpiritMode.IDLE
         self.target: Vec2 = Vec2(0.0, 0.0)
@@ -42,6 +43,8 @@ class Spirit:
 
 class _SpiritState:
     MAX_SPIRITS: int = 16
+    SPAWN_RATE: float = 3.0
+    SPAWN_RATE_VARIATION: float = 1.5
 
     def __init__(self):
         self.waiting_spirits: list[Spirit] = []
@@ -50,7 +53,7 @@ class _SpiritState:
         # Determines the strength of newly spawned enemies, and how likely an enemy is to attack the player or level up
         self.aggression: int = 1
 
-        self.last_spawn_time: float = 0.0
+        self.next_spawn_time: float = 0.0
 
     def reset(self):
         for spirit in self.alive_spirits:
@@ -61,13 +64,14 @@ class _SpiritState:
 
     def spawn_spirit(self, i_x: int, i_y: int, s: int):
         if not self.waiting_spirits:
+            print("!?!")
             return
 
         next_spirit = self.waiting_spirits.pop()
         next_spirit.spawn(i_x, i_y, s)
         self.alive_spirits.append(next_spirit)
 
-        self.last_spawn_time = CLOCK.time
+        self.next_spawn_time = CLOCK.time + _SpiritState.SPAWN_RATE + random() * _SpiritState.SPAWN_RATE_VARIATION
 
     def kill_spirit(self, spirit: Spirit):
         if spirit not in self.alive_spirits:

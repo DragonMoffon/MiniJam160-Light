@@ -1,4 +1,5 @@
 from mj160.util import CONFIG
+from random import choice
 
 
 class Tile:
@@ -26,6 +27,7 @@ class _MapState:
     def __init__(self):
         self.tiles: dict[tuple[int, int], Tile] = None
         self.spawn_point: tuple[int, int] = None
+        self.walkable_tiles: tuple[tuple[int, int], ...] = None
 
     def try_move(self, x: int, y: int):
         return self.tiles and (x, y) in self.tiles and self.tiles[(x, y)].try_move()
@@ -46,9 +48,13 @@ class _MapState:
 
         self.tiles[(x, y)].interact()
 
-    def set_tiles(self, tiles: dict[tuple[int, int, Tile]], spawn_point: tuple[int, int]):
+    def get_random_walkable_tile(self):
+        return choice(self.walkable_tiles)
+
+    def set_tiles(self, tiles: dict[tuple[int, int, Tile]], spawn_point: tuple[int, int], walkable_tiles: tuple[tuple[int, int], ...]):
         self.tiles = tiles
         self.spawn_point = spawn_point
+        self.walkable_tiles = walkable_tiles
 
 
 MapState = _MapState()

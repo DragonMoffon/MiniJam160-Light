@@ -72,6 +72,7 @@ class MapManager:
         tiles: dict[tuple[int, int], Tile] = {}
         spawn_tile: tuple[int, int] = (0, 0)
         updating_tiles: list[UpdatingTile] = []
+        walkable_tiles = []
 
         self._tile_renderer = SpriteList()
 
@@ -103,10 +104,14 @@ class MapManager:
 
                 if hasattr(tile, "update") and callable(tile.update):
                     updating_tiles.append(tile)
+
+                if tile.walkable:
+                    walkable_tiles.append((i_x, i_y))
+
                 tiles[(i_x, i_y)] = tile
                 self._tile_renderer.append(sprite)
 
-        MapState.set_tiles(tiles, spawn_tile)
+        MapState.set_tiles(tiles, spawn_tile, tuple(walkable_tiles))
         self._updating_tiles = tuple(updating_tiles)
 
     def update(self):
