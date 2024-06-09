@@ -43,7 +43,7 @@ class BrazierTile(Tile):
         self.brazier: Brazier = Brazier(i_x*CONFIG['floor_tile_size'], i_y*CONFIG['floor_tile_size'], 4)
         EmberState.add_brazier(self.brazier)
 
-    def on_interact(self):
+    def interact(self):
         if self.brazier.embers:
             PlayerState.embers = min(16, PlayerState.embers + self.brazier.pull())
 
