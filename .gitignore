@@ -11,6 +11,9 @@ __pycache__/
 /*.build
 /.compile
 
+/*.zip
+/*.rar
+
 # Distribution / packaging
 .Python
 build/
