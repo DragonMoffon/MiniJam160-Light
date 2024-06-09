@@ -6,6 +6,7 @@ from pyglet.math import Vec2
 
 from mj160.util import CLOCK, CONFIG, ProceduralAnimator
 from mj160.states.light import Light, LightState
+from mj160.states.ember import Brazier
 
 
 class SpiritMode(Enum):
@@ -23,7 +24,8 @@ class Spirit:
         self.level_time: float = 0.0
         self.mode: SpiritMode = SpiritMode.IDLE
         self.target: Vec2 = Vec2(0.0, 0.0)
-        self.animator: ProceduralAnimator = ProceduralAnimator(1.0, 1.0, 1.0, Vec2(0.0, 0.0), Vec2(0.0, 0.0), Vec2(0.0, 0.0))
+        self.target_brazier: Brazier = None
+        self.animator: ProceduralAnimator = ProceduralAnimator(0.7, 0.5, 2.0, Vec2(0.0, 0.0), Vec2(0.0, 0.0), Vec2(0.0, 0.0))
 
     def spawn(self, i_x: int, i_y: int, s: int):
         self.strength = s
@@ -32,15 +34,32 @@ class Spirit:
         y = i_y * CONFIG['floor_tile_size']
 
         self.animator.y = self.animator.xp = self.target = Vec2(x, y)
-        self.light.x, self.light.y = x, y
-        self.light.s = s * CONFIG['floor_tile_size']
         self.mode: SpiritMode.IDLE
+        self.light.x, self.light.y = x, y
+
+        self.light.r = -1.0
+        self.light.g = -1.0
+        self.light.b = 0.1
+
+        self.light.s = s * CONFIG['floor_tile_size']
+
+        self.target_brazier: Brazier = None
         LightState.add_light(self.light)
 
     def level_up(self):
+        self.level_time = CLOCK.time
+
+        if self.strength >= _SpiritState.MAX_STRENGTH:
+            return
+
         self.strength += 1
         self.light.s = self.strength * CONFIG['floor_tile_size']
-        self.level_time = CLOCK.time
+
+        if self.strength > 4:
+            self.light.g = 0.1
+
+        if self.strength >= 6:
+            self.light.b = -1.0
 
     def kill(self):
         LightState.remove_light(self.light)
@@ -48,6 +67,8 @@ class Spirit:
 
 class _SpiritState:
     MAX_SPIRITS: int = 16
+    MAX_STRENGTH: int = 6
+
     SPAWN_RATE: float = 3.0
     SPAWN_RATE_VARIATION: float = 1.5
 

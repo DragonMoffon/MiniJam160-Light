@@ -64,6 +64,8 @@ class _EmberState:
         for brazier in self.braziers:
             brazier.update()
 
+    def max_brazier(self):
+        return max(b.embers for b in self.braziers)
 
     def get_weighted_brazier(self):
         frac = sum(b.embers for b in self.braziers) or 1.0
