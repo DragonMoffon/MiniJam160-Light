@@ -30,7 +30,7 @@ class _LightState:
 
         self.lights.append(light)
 
-    def remove_lights(self, light: Light):
+    def remove_light(self, light: Light):
         self.lights.remove(light)
 
     def bufferise(self):

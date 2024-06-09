@@ -29,8 +29,6 @@ class LightManager:
         self.geo: gl.Geometry = gl.geometry.quad_2d_fs()
 
     def draw(self):
-        self.ctx.disable(self.ctx.DEPTH_TEST)
-
         LightState.bufferise()
 
         prev_fbo = self.ctx.active_framebuffer
@@ -48,5 +46,3 @@ class LightManager:
         self.render_target.color_attachments[0].use()
         LightState.light_buffer.bind_to_storage_buffer()
         self.geo.render(self.display_prog)
-
-        self.ctx.enable(self.ctx.DEPTH_TEST)

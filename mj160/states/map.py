@@ -3,7 +3,8 @@ from mj160.util import CONFIG
 
 class Tile:
 
-    def __init__(self, interactable: bool = False, walkable: bool = False):
+    def __init__(self, i_x: int, i_y: int, interactable: bool = False, walkable: bool = False):
+        self.location: tuple[int, int] = i_x, i_y
         self.interactable: bool = interactable
         self.walkable: bool = walkable and not interactable
 

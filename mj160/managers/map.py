@@ -3,7 +3,7 @@ from typing import Protocol
 from arcade import Sprite, SpriteList
 
 
-from mj160.states import LightState, Light, MapState, Tile, EmberState, Brazier
+from mj160.states import MapState, Tile, EmberState, Brazier, PlayerState
 from mj160.util import CONFIG
 from mj160.data import load_texture
 
@@ -38,11 +38,14 @@ class EntranceTile(Tile):
 
 class BrazierTile(Tile):
 
-    def __init__(self):
-        super().__init__(True, False)
+    def __init__(self, i_x, i_y):
+        super().__init__(i_x, i_y, True, False)
+        self.brazier: Brazier = Brazier(i_x*CONFIG['floor_tile_size'], i_y*CONFIG['floor_tile_size'], 4)
+        EmberState.add_brazier(self.brazier)
 
-    def update(self):
-        pass
+    def on_interact(self):
+        if self.brazier.embers:
+            PlayerState.embers = min(16, PlayerState.embers + self.brazier.pull())
 
 
 class UpdatingTile(Protocol):
@@ -70,23 +73,23 @@ class MapManager:
             for i_x in range(len(column)):
                 match column[i_x]:
                     case 1:
-                        tile = Tile(False, False)
+                        tile = Tile(i_x, i_y, False, False)
                         sprite = Sprite(load_texture("game_sheet", width=16, height=16),
                                         center_x=i_x * CONFIG['floor_tile_size'],
                                         center_y=i_y * CONFIG['floor_tile_size'])
                     case 2:
-                        tile = BrazierTile()
+                        tile = BrazierTile(i_x, i_y)
                         sprite = Sprite(load_texture("game_sheet", x=48, width=16, height=16),
                                         center_x=i_x * CONFIG['floor_tile_size'],
                                         center_y=i_y * CONFIG['floor_tile_size'])
                     case 3:
-                        tile = Tile(False, True)
+                        tile = Tile(i_x, i_y, False, True)
                         spawn_tile = (i_x, i_y)
                         sprite = Sprite(load_texture("game_sheet", x=32, width=16, height=16),
                                         center_x=i_x * CONFIG['floor_tile_size'],
                                         center_y=i_y * CONFIG['floor_tile_size'])
                     case _:
-                        tile = Tile(False, True)
+                        tile = Tile(i_x, i_y,False, True)
                         sprite = Sprite(load_texture("game_sheet", x=16, width=16, height=16),
                                         center_x=i_x * CONFIG['floor_tile_size'],
                                         center_y=i_y * CONFIG['floor_tile_size'])
