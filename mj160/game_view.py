@@ -1,6 +1,3 @@
-from arcade import Sprite, SpriteSolidColor
-from mj160.util import CLOCK, CONFIG
-
 from arcade.experimental.input.manager import ActionState
 
 from mj160.view import DragonView
