@@ -24,7 +24,7 @@ def main():
         {
             "win_resolution": (320, 180),
             "win_min_size": (1280, 720),
-            "win_name": "Mini-Jam 160: Rogue-Light",
+            "win_name": "Mini-Jam 160: Brazier",
             "win_fullscreen": False
         }
     )

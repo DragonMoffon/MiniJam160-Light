@@ -136,7 +136,7 @@ class PausedOverlay:
                 self._torch.position = (mouse_x, mouse_y)
             case InputDevice.CONTROLLER:
                 o_pos = self._torch.position
-                self._torch.position = o_pos[0] + look_x * CLOCK.dt * CONFIG["controller_look_speed"], o_pos[1] + look_y * CLOCK.dt * CONFIG['controller_look_speed']
+                self._torch.position = o_pos[0] + look_x * CLOCK.engine_dt * CONFIG["controller_look_speed"], o_pos[1] + look_y * CLOCK.engine_dt * CONFIG['controller_look_speed']
 
         self._selected_button = None
         if self._retry_button.collides_with_point(self._torch.position):

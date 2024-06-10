@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 class PlayerManager:
 
     def __init__(self):
-        self.move_sound = load_audio("blip_e")
         self.ember_sound = load_audio("ember")
 
         self._window: DragonWindow = get_window()
