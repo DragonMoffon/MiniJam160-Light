@@ -41,6 +41,9 @@ class DragonWindow(Window):
         self._next_view_args: tuple = ()
         self._next_view_kwargs: dict = {}
 
+    def go_to_splash(self):
+        self.next_view(SplashView, MainMenuView)
+
     def go_to_menu(self):
         self.next_view(MainMenuView)
 
@@ -56,7 +59,7 @@ class DragonWindow(Window):
     def start_close(self):
         self.closing = True
 
-    def next_view(self, view: type[DragonView], *args, **kwargs):
+    def next_view(self, view: type[View], *args, **kwargs):
         self._next_view = view
         self._next_view_args = args
         self._next_view_kwargs = kwargs

@@ -20,13 +20,13 @@ SPLASHES = (
     Splash(
         "splash_arcade",
         0.25,
-        1.2,
+        3.0,
         True
     ),
     Splash(
         "splash_dragon",
         0.25,
-        1.2,
+        3.0,
         False,
         True
     ),
@@ -35,7 +35,8 @@ SPLASHES = (
         1.0,
         10.0,
         False,
-        True
+        True,
+        do_fade_out=False
     )
 #    Splash(
 #        "splash_digi",

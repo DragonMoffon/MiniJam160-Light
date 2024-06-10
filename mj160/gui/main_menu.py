@@ -76,17 +76,19 @@ class MainMenuGui:
         self.buttons = SpriteList()
 
         self._mouse: Sprite = Sprite(load_texture("game_sheet", y=32, width=16, height=16))
+        self._title: Sprite = Sprite(load_texture("menu_sheet", y=256, width=128, height=32), center_x=0.0, center_y=CONFIG['win_resolution'][1]/2.0 - 16)
 
         controllers = get_controllers()
         if controllers and controllers[0] != self.window.input_manager.controller:
             self.window.input_manager.unbind_controller()
             self.window.input_manager.bind_controller(controllers[0])
 
-        start_: MainMenuButton = MainMenuButton(0.0, 64, load_texture("menu_sheet", width=128, height=32), lambda: self.window.go_to_game())
-        options_: MainMenuButton = MainMenuButton(0.0, 0.0, load_texture("menu_sheet", y=32, width=128, height=32), lambda: logger.error("NOT IMPLEMENTED"))
-        quit_: MainMenuButton = MainMenuButton(0.0, -64.0, load_texture("menu_sheet", y=64, width=128, height=32), lambda: self.window.start_close())
+        start_: MainMenuButton = MainMenuButton(0.0, 34, load_texture("menu_sheet", width=128, height=32), lambda: self.window.go_to_game())
+        options_: MainMenuButton = MainMenuButton(0.0, 1, load_texture("menu_sheet", y=32, width=128, height=32), lambda: logger.error("NOT IMPLEMENTED"))
+        info_: MainMenuButton = MainMenuButton(0, -32, load_texture("menu_sheet", y=224, width=128, height=32), lambda: self.window.go_to_splash())
+        quit_: MainMenuButton = MainMenuButton(0.0, -66, load_texture("menu_sheet", y=64, width=128, height=32), lambda: self.window.start_close())
 
-        self.buttons.extend((start_, options_, quit_))
+        self.buttons.extend((start_, options_, quit_, info_))
 
     def cleanup(self):
         self.buttons = None
@@ -159,6 +161,7 @@ class MainMenuGui:
         if not self.buttons:
             return
         self.buttons.draw(pixelated=True)
+        self._title.draw(pixelated=True)
         self._mouse.draw(pixelated=True)
 
     def on_show(self):
