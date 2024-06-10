@@ -6,7 +6,8 @@ from pyglet.math import Vec2
 
 from mj160.util import CLOCK, CONFIG, ProceduralAnimator
 from mj160.states.light import Light, LightState
-from mj160.states.ember import Brazier
+from mj160.states.ember import Brazier, EmberState
+from mj160.states.player import PlayerState
 
 
 class SpiritMode(Enum):
@@ -20,7 +21,7 @@ class Spirit:
 
     def __init__(self):
         self.strength: int = 0
-        self.light: Light = Light(-1.0, -1.0, 0.05, 0.0, 0.0, 0.0)
+        self.light: Light = Light(-1.0, -1.0, 0.2, 0.0, 0.0, 0.0)
         self.level_time: float = 0.0
         self.mode: SpiritMode = SpiritMode.IDLE
         self.target: Vec2 = Vec2(0.0, 0.0)
@@ -39,7 +40,13 @@ class Spirit:
 
         self.light.r = -1.0
         self.light.g = -1.0
-        self.light.b = 0.1
+        self.light.b = 0.2
+
+        if s > 4:
+            self.light.g = 0.2
+
+        if s >= 6:
+            self.light.b = -1.0
 
         self.light.s = s * CONFIG['floor_tile_size']
 
@@ -53,13 +60,22 @@ class Spirit:
             return
 
         self.strength += 1
-        self.light.s = self.strength * CONFIG['floor_tile_size']
+        self.light.s = self.strength * CONFIG['floor_tile_size'] * 1.5
 
         if self.strength > 4:
-            self.light.g = 0.1
+            self.light.g = 0.2
 
         if self.strength >= 6:
             self.light.b = -1.0
+
+        if self.strength >= _SpiritState.MAX_STRENGTH:
+            self.light.r = 1.0
+            self.light.g = 1.0
+
+        if self.strength >= 16:
+            self.light.r = 1.0
+            self.light.g = 1.0
+            self.light.b = 1.0
 
     def kill(self):
         if self.light in LightState.lights:
@@ -100,7 +116,10 @@ class _SpiritState:
         self.next_aggression_time: float = CLOCK.time + _SpiritState.AGGRO_RATE + random() * _SpiritState.AGGRO_RATE_VARIATION
 
     def spawn_spirit(self, i_x: int, i_y: int, s: int):
-        self.next_spawn_time = CLOCK.time + _SpiritState.SPAWN_RATE + random() * _SpiritState.SPAWN_RATE_VARIATION
+        t = CLOCK.time
+
+        r = (_SpiritState.SPAWN_RATE + random() * _SpiritState.SPAWN_RATE_VARIATION) * (1 - PlayerState.embers / 32.0) * (1 - self.aggression / self.MAX_AGGRESSION) + (1 - EmberState.max_brazier() / (1.5 * EmberState.EMBER_MAX))
+        self.next_spawn_time = t + r
         if not self.waiting_spirits:
             return
 
@@ -118,7 +137,11 @@ class _SpiritState:
 
     def increase_aggro(self):
         self.aggression = min(_SpiritState.MAX_AGGRESSION, self.aggression + 1)
-        self.next_aggression_time: float = CLOCK.time + _SpiritState.AGGRO_RATE + random() * _SpiritState.AGGRO_RATE_VARIATION
+        t = CLOCK.time
+        print(EmberState.max_brazier(), EmberState.EMBER_MAX)
+        r = (_SpiritState.AGGRO_RATE + random() * _SpiritState.AGGRO_RATE_VARIATION) * (1 - EmberState.max_brazier() / (4.0 * EmberState.EMBER_MAX))
+
+        self.next_aggression_time: float = t + r
 
 
 SpiritState = _SpiritState()

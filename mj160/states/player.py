@@ -4,6 +4,7 @@ from mj160.util import CLOCK
 
 
 class _PlayerState:
+    MOVE_BUFFER_RADIUS: float = 1 / 16.0
 
     def __init__(self):
         self.x: int = 0
@@ -19,6 +20,8 @@ class _PlayerState:
         self.move_cost: int = 0
         self.move_track: int = 0
 
+        self.last_hit: float = 0.0
+
     def reset(self):
         self.x = self.y = self.embers = 0
         self.move_cost = self.move_track = 4
@@ -30,5 +33,5 @@ class _PlayerState:
 
         self.aim = Vec2(0.0, 0.0)
 
-
+        self.last_hit: float = 0.0
 PlayerState = _PlayerState()

@@ -30,8 +30,10 @@ class PlayerManager:
         self.renderer.extend((self._player_sprite, self._torch_sprite))
         LightState.add_light(self._torch_light)
 
-        self.camera_animator: ProceduralAnimator = ProceduralAnimator(2.0, 1.0, 0.5, Vec2(0.0), Vec2(0.0), Vec2(0.0))
-        self.torch_animator: ProceduralAnimator = ProceduralAnimator(2.0, 1.0, 0.5, Vec2(0.0), Vec2(0.0), Vec2(0.0))
+        self.camera_animator: ProceduralAnimator = ProceduralAnimator(1.0, 0.75, 1.2, Vec2(0.0), Vec2(0.0), Vec2(0.0))
+        self.torch_animator: ProceduralAnimator = ProceduralAnimator(2.0, 0.75, 1.2, Vec2(0.0), Vec2(0.0), Vec2(0.0))
+
+        self.buffered_move: tuple[int, int] = None
 
     def spawn(self):
         i_x, i_y = MapState.spawn_point
@@ -41,6 +43,7 @@ class PlayerManager:
         PlayerState.y = i_y
 
         self._player_sprite.position = n_x, n_y
+        self.buffered_move = None
 
     def look(self):
         input_manager = self._window.input_manager
@@ -65,12 +68,16 @@ class PlayerManager:
         input_manager = self._window.input_manager
 
         move_x, move_y = input_manager.axis("player-move_horizontal"), input_manager.axis("player-move_vertical")
-        if not (move_x or move_y):
+        if not (move_x or move_y) and self.buffered_move is None:
             return
 
+        self.buffered_move = (move_x, move_y)
         if CLOCK.time_since(PlayerState.last_move) < PlayerState.move_speed:
             return
         PlayerState.last_move = CLOCK.time
+        if self.buffered_move and not (move_x, move_y):
+            move_x, move_y = self.buffered_move
+        self.buffered_move = None
 
         if move_x:
             n_x = PlayerState.x + (1 if move_x > 0 else -1)
@@ -98,7 +105,7 @@ class PlayerManager:
             if PlayerState.embers > 0:
                 PlayerState.move_track = PlayerState.move_cost
             self.ember_sound.play(CONFIG['game_volume'])
-            PlayerState.embers = max(0, PlayerState.embers - 1)
+            PlayerState.embers -= 1
 
         self._player_sprite.position = x, y
 
@@ -107,7 +114,12 @@ class PlayerManager:
         self.look()
         self.move()
 
-        self._torch_light.s = PlayerState.embers * CONFIG['floor_tile_size']
+        if CLOCK.time_since(PlayerState.last_hit) < 1.0/8.0:
+            self._torch_light.b = 1.0
+        else:
+            self._torch_light.b = 0.0
+
+        self._torch_light.s = max(0.0, PlayerState.embers * CONFIG['floor_tile_size'])
 
     def draw(self):
         self.renderer.draw(pixelated=True)
