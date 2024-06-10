@@ -41,6 +41,15 @@ class UpscaleFBO:
         self.display_camera: camera.Camera2D = camera.Camera2D(viewport=LBWH(wp, hp, wa, ha), position=(0.0, 0.0))
         self.into_camera: camera.Camera2D = camera.Camera2D(viewport=LBWH(0, 0, wr, hr), position=(0.0, 0.0))
 
+    def resize(self):
+        wr, hr = CONFIG['win_resolution']
+        ws, hs = get_window().size
+        ratio = min(int(ws / wr), int(hs / hr))
+        wa, ha = wr * ratio, hr * ratio
+        wp, hp = (ws - wa) / 2, (hs - ha) / 2
+
+        self.display_camera.viewport = LBWH(wp, hp, wa, ha)
+
     def use(self):
         self._fbo.use()
         self.into_camera.use()

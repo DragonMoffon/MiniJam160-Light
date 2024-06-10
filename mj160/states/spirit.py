@@ -138,7 +138,6 @@ class _SpiritState:
     def increase_aggro(self):
         self.aggression = min(_SpiritState.MAX_AGGRESSION, self.aggression + 1)
         t = CLOCK.time
-        print(EmberState.max_brazier(), EmberState.EMBER_MAX)
         r = (_SpiritState.AGGRO_RATE + random() * _SpiritState.AGGRO_RATE_VARIATION) * (1 - EmberState.max_brazier() / (4.0 * EmberState.EMBER_MAX))
 
         self.next_aggression_time: float = t + r

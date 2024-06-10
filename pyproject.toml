@@ -3,7 +3,7 @@ name="Rogue-Light"
 description="A short light based rogue-like built with Python Arcade"
 license = {text = "MIT License"}
 readme="README.md"
-version="0.0"
+version="1.0"
 dependencies=[
     "digiformatter",
     "arcade@ git+https://github.com/pythonarcade/arcade#egg=development"

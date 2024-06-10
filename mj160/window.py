@@ -16,6 +16,7 @@ from mj160.util.splash import SplashView
 from mj160.main_menu import MainMenuView
 from mj160.game_view import GameView
 from mj160.lose_view import LoseView
+from mj160.options_view import OptionsView
 
 from mj160.util.upscale_fbo import UpscaleFBO
 
@@ -41,6 +42,10 @@ class DragonWindow(Window):
         self._next_view_args: tuple = ()
         self._next_view_kwargs: dict = {}
 
+    def on_resize(self, width: int, height: int):
+        super().on_resize(width, height)
+        self.upscale_renderer.resize()
+
     def go_to_splash(self):
         self.next_view(SplashView, MainMenuView)
 
@@ -52,6 +57,9 @@ class DragonWindow(Window):
 
     def go_to_lose(self):
         self.next_view(LoseView)
+
+    def go_to_options(self):
+        self.next_view(OptionsView)
 
     def on_mouse_enter(self, x: int, y: int):
         self.set_mouse_visible(False)

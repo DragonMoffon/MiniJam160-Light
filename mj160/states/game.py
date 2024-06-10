@@ -18,6 +18,7 @@ class _GameState:
     def next_play(self):
         self.play_count += 1
         self.play_start = CLOCK.time
+        self.total_spirit_strength = 0
 
     def end_play(self):
         self.play_end = CLOCK.time

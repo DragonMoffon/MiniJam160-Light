@@ -38,13 +38,6 @@ SPLASHES = (
         True,
         do_fade_out=False
     )
-#    Splash(
-#        "splash_digi",
-#        0.025,
-#        3.0,
-#        False,
-#        True
-#    )
 )
 
 

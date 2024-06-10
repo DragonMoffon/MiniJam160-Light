@@ -84,7 +84,7 @@ class MainMenuGui:
             self.window.input_manager.bind_controller(controllers[0])
 
         start_: MainMenuButton = MainMenuButton(0.0, 34, load_texture("menu_sheet", width=128, height=32), lambda: self.window.go_to_game())
-        options_: MainMenuButton = MainMenuButton(0.0, 1, load_texture("menu_sheet", y=32, width=128, height=32), lambda: logger.error("NOT IMPLEMENTED"))
+        options_: MainMenuButton = MainMenuButton(0.0, 1, load_texture("menu_sheet", y=32, width=128, height=32), lambda: self.window.go_to_options())
         info_: MainMenuButton = MainMenuButton(0, -32, load_texture("menu_sheet", y=224, width=128, height=32), lambda: self.window.go_to_splash())
         quit_: MainMenuButton = MainMenuButton(0.0, -66, load_texture("menu_sheet", y=64, width=128, height=32), lambda: self.window.start_close())
 

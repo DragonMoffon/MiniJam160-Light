@@ -13,6 +13,7 @@ __pycache__/
 
 /*.zip
 /*.rar
+/Brazier-mj160_*
 
 # Distribution / packaging
 .Python
